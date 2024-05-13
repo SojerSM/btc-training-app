@@ -20,6 +20,12 @@ public class Task {
         // empty constructor
     }
 
+    public Task(String title, LocalDateTime deadline, boolean isFinished) {
+        this.title = title;
+        this.deadline = deadline;
+        this.isFinished = isFinished;
+    }
+
     public long getId() {
         return id;
     }

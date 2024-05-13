@@ -1,0 +1,10 @@
+spring:
+  profiles:
+    active: pg
+  jpa:
+    properties:
+      hibernate:
+        format_sql: true
+    hibernate:
+      ddl-auto: update
+    show-sql: true

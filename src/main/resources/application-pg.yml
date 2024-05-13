@@ -1,0 +1,8 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/btc-training
+    username: postgres
+    password: ${POSTGRES_SUPERUSER_PWD}
+    driver-class-name: org.postgresql.Driver
+
+

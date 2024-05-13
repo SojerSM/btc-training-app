@@ -1,6 +1,7 @@
 package com.btc.backend.app.task.core.model.mapper;
 
 import com.btc.backend.app.task.core.model.dto.TaskDTO;
+import com.btc.backend.app.task.core.model.dto.TaskRequestDTO;
 import com.btc.backend.app.task.core.model.entity.Task;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +14,6 @@ public class TaskMapper {
         task.setTitle(dto.getTitle());
         task.setDeadline(dto.getDeadline());
         task.setFinished(dto.isFinished());
-
         return task;
     }
 
@@ -23,7 +23,14 @@ public class TaskMapper {
         dto.setTitle(task.getTitle());
         dto.setDeadline(task.getDeadline());
         dto.setFinished(task.isFinished());
-
         return dto;
+    }
+
+    public Task map(TaskRequestDTO taskRequestDTO) {
+        Task task = new Task();
+        task.setTitle(taskRequestDTO.getTitle());
+        task.setDeadline(taskRequestDTO.getDeadline());
+        task.setFinished(false);
+        return task;
     }
 }

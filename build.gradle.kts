@@ -20,6 +20,7 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-jdbc")
     implementation("org.springframework.boot:spring-boot-starter-validation")
     implementation("org.springframework.boot:spring-boot-starter-web")
+    implementation("org.springframework.boot:spring-boot-starter-security:3.2.5")
     implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3")
 
     developmentOnly("org.springframework.boot:spring-boot-devtools")

@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(name = RestEndpoints.TASK_PATH)
+@RequestMapping(value = RestEndpoints.TASK_PATH)
 public class TaskController {
 
     private final TaskService taskService;

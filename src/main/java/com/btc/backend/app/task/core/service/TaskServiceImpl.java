@@ -43,8 +43,8 @@ public class TaskServiceImpl implements TaskService {
 
     @Override
     public ResponseEntity<?> add(TaskRequestDTO taskRequestDTO) {
-        taskRepository.save(taskMapper.map(taskRequestDTO));
+        Task task = taskRepository.save(taskMapper.map(taskRequestDTO));
 
-        return ResponseEntity.ok().build();
+        return ResponseEntity.ok().body(task);
     }
 }

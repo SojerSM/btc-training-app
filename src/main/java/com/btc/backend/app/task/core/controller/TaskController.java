@@ -36,4 +36,14 @@ public class TaskController {
     public ResponseEntity<?> add(@RequestBody @Validated TaskRequestDTO taskRequestDTO) {
         return taskService.add(taskRequestDTO);
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<?> delete(@PathVariable(name = "id") long id) {
+        return taskService.delete(id);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<?> deleteMany(@RequestBody long[] idArr) {
+        return taskService.deleteMany(idArr);
+    }
 }

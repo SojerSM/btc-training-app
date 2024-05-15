@@ -12,4 +12,6 @@ public interface TaskService {
     List<TaskDTO> findAll();
     Optional<TaskDTO> findById(long id);
     ResponseEntity<?> add(TaskRequestDTO taskRequestDTO);
+    ResponseEntity<?> delete(long id);
+    ResponseEntity<?> deleteMany(long[] idArr);
 }

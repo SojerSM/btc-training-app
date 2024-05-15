@@ -6,13 +6,8 @@ import com.btc.backend.app.task.core.model.dto.TaskRequestDTO;
 import com.btc.backend.app.task.core.model.entity.Task;
 import com.btc.backend.app.task.core.model.mapper.TaskMapper;
 import com.btc.backend.app.task.core.repository.TaskRepository;
-import com.btc.backend.core.config.RestEndpoints;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.servlet.function.ServerRequest;
 
 import java.util.List;
 import java.util.Optional;
@@ -44,7 +39,20 @@ public class TaskServiceImpl implements TaskService {
     @Override
     public ResponseEntity<?> add(TaskRequestDTO taskRequestDTO) {
         Task task = taskRepository.save(taskMapper.map(taskRequestDTO));
-
         return ResponseEntity.ok().body(task);
+    }
+
+    @Override
+    public ResponseEntity<?> delete(long id) {
+        taskRepository.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @Override
+    public ResponseEntity<?> deleteMany(long[] idArr) {
+        for (long id : idArr) {
+            taskRepository.deleteById(id);
+        }
+        return ResponseEntity.noContent().build();
     }
 }

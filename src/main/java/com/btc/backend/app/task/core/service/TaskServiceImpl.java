@@ -9,6 +9,7 @@ import com.btc.backend.app.task.core.model.mapper.TaskMapper;
 import com.btc.backend.app.task.core.repository.TaskRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -27,20 +28,33 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> findAll(String filter) {
+    public List<TaskDTO> findAll(String filter, String title) {
         List<Task> tasks = new ArrayList<>();
-
-        if (filter.toUpperCase().equals(TaskFilter.ALL.toString()) || filter.isEmpty()) {
-            tasks = taskRepository.findAll();
+        if (filter == null && title != null) {
+            return taskRepository.findAllByTitleContaining(title).stream()
+                    .map(taskMapper::map)
+                    .toList();
         }
-        if (filter.toUpperCase().equals(TaskFilter.DONE.toString())) {
-            tasks = taskRepository.findAllByIsFinished(true);
-        }
-        if (filter.toUpperCase().equals(TaskFilter.PENDING.toString())) {
-            tasks = taskRepository.findAllByIsFinished(false);
-        }
-        if (filter.toUpperCase().equals(TaskFilter.OUTDATED.toString())) {
-            tasks = taskRepository.findAllByDeadlineBefore(LocalDateTime.now());
+        if (filter != null) {
+            if (filter.toUpperCase().equals(TaskFilter.ALL.toString())) {
+                tasks = taskRepository.findAll();
+            }
+            if (filter.toUpperCase().equals(TaskFilter.DONE.toString())) {
+                tasks = taskRepository.findAllByFinished(true);
+            }
+            if (filter.toUpperCase().equals(TaskFilter.PENDING.toString())) {
+                tasks = taskRepository.findAllByFinished(false).stream()
+                        .filter(task -> task.getDeadline().isAfter(LocalDateTime.now()))
+                        .toList();
+            }
+            if (filter.toUpperCase().equals(TaskFilter.OUTDATED.toString())) {
+                tasks = taskRepository.findAllByDeadlineBefore(LocalDateTime.now()).stream()
+                        .filter(task -> !task.getFinished())
+                        .toList();
+            }
+            if (title != null) {
+                tasks = taskRepository.findAllByTitleContaining(title);
+            }
         }
 
         return tasks.stream().map(taskMapper::map).toList();
@@ -56,6 +70,23 @@ public class TaskServiceImpl implements TaskService {
     public ResponseEntity<?> add(TaskRequestDTO taskRequestDTO) {
         Task task = taskRepository.save(taskMapper.map(taskRequestDTO));
         return ResponseEntity.ok().body(task);
+    }
+
+    @Override
+    public ResponseEntity<?> update(long id, TaskRequestDTO taskRequestDTO) {
+        Optional<Task> task = taskRepository.findById(id);
+
+        if (task.isPresent()) {
+            Task existing = task.get();
+            existing.setTitle(taskRequestDTO.getTitle());
+            existing.setDeadline(taskRequestDTO.getDeadline());
+            existing.setFinished(taskRequestDTO.getFinished());
+
+            taskRepository.save(existing);
+            return ResponseEntity.ok().build();
+        }
+
+        return ResponseEntity.notFound().build();
     }
 
     @Override

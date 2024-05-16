@@ -1,5 +1,7 @@
 package com.btc.backend.app.task.core.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.LocalDateTime;
 
 public class TaskDTO {
@@ -7,7 +9,7 @@ public class TaskDTO {
     private long id;
     private String title;
     private LocalDateTime deadline;
-    private boolean isFinished;
+    private boolean finished;
 
     public TaskDTO() {
         // empty constructor
@@ -37,11 +39,11 @@ public class TaskDTO {
         this.deadline = deadline;
     }
 
-    public boolean isFinished() {
-        return isFinished;
+    public boolean getFinished() {
+        return finished;
     }
 
     public void setFinished(boolean finished) {
-        isFinished = finished;
+        this.finished = finished;
     }
 }

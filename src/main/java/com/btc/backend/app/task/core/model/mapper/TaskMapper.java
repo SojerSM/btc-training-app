@@ -13,7 +13,7 @@ public class TaskMapper {
         task.setId(dto.getId());
         task.setTitle(dto.getTitle());
         task.setDeadline(dto.getDeadline());
-        task.setFinished(dto.isFinished());
+        task.setFinished(dto.getFinished());
         return task;
     }
 
@@ -22,7 +22,7 @@ public class TaskMapper {
         dto.setId(task.getId());
         dto.setTitle(task.getTitle());
         dto.setDeadline(task.getDeadline());
-        dto.setFinished(task.isFinished());
+        dto.setFinished(task.getFinished());
         return dto;
     }
 
@@ -30,7 +30,7 @@ public class TaskMapper {
         Task task = new Task();
         task.setTitle(taskRequestDTO.getTitle());
         task.setDeadline(taskRequestDTO.getDeadline());
-        task.setFinished(false);
+        task.setFinished(taskRequestDTO.getFinished());
         return task;
     }
 }

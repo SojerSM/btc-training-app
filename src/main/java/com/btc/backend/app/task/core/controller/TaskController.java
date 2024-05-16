@@ -5,6 +5,7 @@ import com.btc.backend.app.task.core.model.dto.TaskDTO;
 import com.btc.backend.app.task.core.model.dto.TaskRequestDTO;
 import com.btc.backend.core.config.RestEndpoints;
 import jakarta.persistence.Enumerated;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -22,8 +23,9 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskDTO> findAll(@RequestParam(name = "filter") String filter) {
-        return taskService.findAll(filter);
+    public List<TaskDTO> findAll(@RequestParam(name = "filter", required = false) String filter,
+                                 @RequestParam(name = "title", required = false) String title) {
+        return taskService.findAll(filter, title);
     }
 
     @GetMapping(value = "/{id}")
@@ -36,6 +38,12 @@ public class TaskController {
     @PostMapping
     public ResponseEntity<?> add(@RequestBody @Validated TaskRequestDTO taskRequestDTO) {
         return taskService.add(taskRequestDTO);
+    }
+
+    @PutMapping(value = "/{id}")
+    public ResponseEntity<?> update(@PathVariable(name = "id") long id,
+                                    @RequestBody @Validated TaskRequestDTO taskRequestDTO) {
+        return taskService.update(id, taskRequestDTO);
     }
 
     @DeleteMapping(value = "/{id}")

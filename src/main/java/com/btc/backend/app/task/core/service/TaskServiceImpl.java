@@ -4,11 +4,14 @@ import com.btc.backend.app.task.api.TaskService;
 import com.btc.backend.app.task.core.model.dto.TaskDTO;
 import com.btc.backend.app.task.core.model.dto.TaskRequestDTO;
 import com.btc.backend.app.task.core.model.entity.Task;
+import com.btc.backend.app.task.core.model.enums.TaskFilter;
 import com.btc.backend.app.task.core.model.mapper.TaskMapper;
 import com.btc.backend.app.task.core.repository.TaskRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,10 +27,23 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> findAll() {
-        return taskRepository.findAll().stream()
-                .map(taskMapper::map)
-                .toList();
+    public List<TaskDTO> findAll(String filter) {
+        List<Task> tasks = new ArrayList<>();
+
+        if (filter.toUpperCase().equals(TaskFilter.ALL.toString()) || filter.isEmpty()) {
+            tasks = taskRepository.findAll();
+        }
+        if (filter.toUpperCase().equals(TaskFilter.DONE.toString())) {
+            tasks = taskRepository.findAllByIsFinished(true);
+        }
+        if (filter.toUpperCase().equals(TaskFilter.PENDING.toString())) {
+            tasks = taskRepository.findAllByIsFinished(false);
+        }
+        if (filter.toUpperCase().equals(TaskFilter.OUTDATED.toString())) {
+            tasks = taskRepository.findAllByDeadlineBefore(LocalDateTime.now());
+        }
+
+        return tasks.stream().map(taskMapper::map).toList();
     }
 
     @Override

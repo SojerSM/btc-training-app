@@ -4,6 +4,7 @@ import com.btc.backend.app.task.api.TaskService;
 import com.btc.backend.app.task.core.model.dto.TaskDTO;
 import com.btc.backend.app.task.core.model.dto.TaskRequestDTO;
 import com.btc.backend.core.config.RestEndpoints;
+import jakarta.persistence.Enumerated;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +22,8 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskDTO> findAll() {
-        return taskService.findAll();
+    public List<TaskDTO> findAll(@RequestParam(name = "filter") String filter) {
+        return taskService.findAll(filter);
     }
 
     @GetMapping(value = "/{id}")

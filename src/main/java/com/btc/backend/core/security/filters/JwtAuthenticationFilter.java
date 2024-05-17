@@ -2,6 +2,7 @@ package com.btc.backend.core.security.filters;
 
 import com.btc.backend.app.account.core.model.entity.Account;
 import com.btc.backend.app.account.core.repository.AccountRepository;
+import com.btc.backend.core.security.auth.service.AuthenticationService;
 import com.btc.backend.core.security.jwt.util.AuthPropertiesProvider;
 import com.btc.backend.core.security.jwt.util.JwtDetailsProvider;
 import jakarta.servlet.FilterChain;
@@ -9,6 +10,8 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
@@ -20,6 +23,8 @@ import java.util.Optional;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+
+    private final Logger logger = LoggerFactory.getLogger(AuthenticationService.class);
 
     private final JwtDetailsProvider jwtDetailsProvider;
     private final AuthPropertiesProvider authPropertiesProvider;
@@ -42,27 +47,25 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String token;
         final String username;
 
-        if (authHeader == null || authHeader.startsWith(authPropertiesProvider.getPrefix())) {
+        logger.warn("Filtering");
+
+        if (authHeader == null || !authHeader.startsWith(authPropertiesProvider.getPrefix())) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        token = authHeader.substring(authPropertiesProvider.getPrefix().length());
+        token = authHeader.substring(authPropertiesProvider.getPrefix().length() + 1);
         username = jwtDetailsProvider.extractUsername(token);
-        Optional<Account> account = accountRepository.findByUsername(username);
-
-        if (account.isEmpty()) {
-            filterChain.doFilter(request, response);
-            return;
-        }
 
         if (SecurityContextHolder.getContext().getAuthentication() == null && jwtDetailsProvider.isTokenValid(token)) {
             UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                    username, null, account.get().getAuthorities());
+                    username, null, null);
 
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }
+
+        logger.warn("Authenticated: ".concat(String.valueOf(SecurityContextHolder.getContext().getAuthentication().isAuthenticated())));
 
         filterChain.doFilter(request, response);
     }

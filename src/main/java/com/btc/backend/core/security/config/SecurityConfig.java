@@ -1,5 +1,7 @@
 package com.btc.backend.core.security.config;
 
+import com.btc.backend.core.rest.RestEndpoints;
+import com.btc.backend.core.security.filters.JwtAuthenticationFilter;
 import com.btc.backend.core.security.jwt.util.AuthPropertiesProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +11,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 
 import java.time.Duration;
@@ -20,9 +23,12 @@ import java.util.List;
 public class SecurityConfig {
 
     private final AuthenticationProvider authenticationProvider;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
-    public SecurityConfig(AuthenticationProvider authenticationProvider) {
+    public SecurityConfig(AuthenticationProvider authenticationProvider,
+                          JwtAuthenticationFilter jwtAuthenticationFilter) {
         this.authenticationProvider = authenticationProvider;
+        this.jwtAuthenticationFilter = jwtAuthenticationFilter;
     }
 
     @Bean
@@ -42,8 +48,10 @@ public class SecurityConfig {
                 }))
                 .authorizeHttpRequests(requests ->
                         requests
-                                .anyRequest().permitAll())
+                                .requestMatchers(RestEndpoints.API_BASE + "/auth/authenticate").permitAll()
+                                .anyRequest().authenticated())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .authenticationProvider(authenticationProvider);
 
         return http.build();

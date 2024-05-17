@@ -37,10 +37,10 @@ public class BootstrapMocks implements CommandLineRunner {
         if (taskRepository.findAll().isEmpty()) {
             List<Task> mocked = new ArrayList<>();
 
-            mocked.add(new Task("Test1", LocalDateTime.now(), false));
-            mocked.add(new Task("Test2", LocalDateTime.now(), false));
-            mocked.add(new Task("Test3", LocalDateTime.now(), true));
-            mocked.add(new Task("Test4", LocalDateTime.now(), false));
+            mocked.add(new Task("Zakupy", LocalDateTime.now(), false));
+            mocked.add(new Task("Spotkanie z klientem", LocalDateTime.now(), false));
+            mocked.add(new Task("Kajaki", LocalDateTime.now(), true));
+            mocked.add(new Task("Naprawić zlew", LocalDateTime.now(), false));
 
             taskRepository.saveAll(mocked);
         }

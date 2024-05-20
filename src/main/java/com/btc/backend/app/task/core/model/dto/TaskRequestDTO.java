@@ -1,41 +1,37 @@
 package com.btc.backend.app.task.core.model.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
-public class TaskDTO {
+public class TaskRequestDTO {
 
-    private long id;
+    @NotNull
     private String title;
+
+    @NotNull
     private LocalDateTime deadline;
     private boolean finished;
 
-    public TaskDTO() {
+    public TaskRequestDTO() {
         // empty constructor
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getTitle() {
+    public @NotNull String getTitle() {
         return title;
     }
 
-    public void setTitle(String title) {
+    public void setTitle(@NotNull String title) {
         this.title = title;
     }
 
-    public LocalDateTime getDeadline() {
+    public @NotNull LocalDateTime getDeadline() {
         return deadline;
     }
 
-    public void setDeadline(LocalDateTime deadline) {
+    public void setDeadline(@NotNull LocalDateTime deadline) {
         this.deadline = deadline;
     }
 

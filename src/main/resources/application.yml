@@ -12,3 +12,10 @@ spring:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+security:
+  jwt:
+    secret-key: 42f87806eb5e695882afe118505621537eb1ca450d6a074496028209502c3f51
+    access-exp-delay: 90000000
+    prefix: Bearer
+    auth-header: Authorization

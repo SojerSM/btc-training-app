@@ -1,5 +1,6 @@
 package com.btc.backend.app.task.core.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -14,10 +15,16 @@ public class Task {
 
     private String title;
     private LocalDateTime deadline;
-    private boolean isFinished;
+    private boolean finished;
 
     public Task() {
         // empty constructor
+    }
+
+    public Task(String title, LocalDateTime deadline, boolean finished) {
+        this.title = title;
+        this.deadline = deadline;
+        this.finished = finished;
     }
 
     public long getId() {
@@ -44,11 +51,11 @@ public class Task {
         this.deadline = deadline;
     }
 
-    public boolean isFinished() {
-        return isFinished;
+    public boolean getFinished() {
+        return finished;
     }
 
     public void setFinished(boolean finished) {
-        isFinished = finished;
+        this.finished = finished;
     }
 }

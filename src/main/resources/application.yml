@@ -8,6 +8,16 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 658838121329-im5h2fvhvqpkggpvkl5bfp5verso0ese.apps.googleusercontent.com
+            clientSecret: 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
+            scope:
+              - email
+              - profile
 
 springdoc:
   swagger-ui:

@@ -10,5 +10,4 @@ public class TrainingAppServerApplication extends SpringBootServletInitializer {
     public static void main(String[] args) {
         SpringApplication.run(TrainingAppServerApplication.class, args);
     }
-
 }

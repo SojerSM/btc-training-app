@@ -2,7 +2,6 @@ package com.btc.backend.core.security.config;
 
 import com.btc.backend.core.rest.RestEndpoints;
 import com.btc.backend.core.security.filters.JwtAuthenticationFilter;
-import com.btc.backend.core.security.jwt.util.AuthPropertiesProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationProvider;

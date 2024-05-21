@@ -51,6 +51,7 @@ public class BootstrapMocks implements CommandLineRunner {
             Account registered = new Account();
             registered.setUsername("user");
             registered.setPassword(passwordEncoder.encode("password"));
+            registered.setEmail("seb.maz1996@gmail.com");
 
             accountRepository.save(registered);
         }

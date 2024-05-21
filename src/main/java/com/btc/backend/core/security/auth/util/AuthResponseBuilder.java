@@ -1,6 +1,6 @@
 package com.btc.backend.core.security.auth.util;
 
-import com.btc.backend.core.security.auth.dto.AuthResponseDTO;
+import com.btc.backend.core.security.auth.model.dto.AuthResponseDTO;
 import com.btc.backend.core.security.jwt.util.AuthPropertiesProvider;
 import org.springframework.stereotype.Component;
 

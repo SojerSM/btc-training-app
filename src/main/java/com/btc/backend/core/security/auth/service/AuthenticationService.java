@@ -1,5 +1,6 @@
 package com.btc.backend.core.security.auth.service;
 
+import com.btc.backend.app.account.api.AccountService;
 import com.btc.backend.core.security.auth.model.dto.AuthRequestDTO;
 import com.btc.backend.core.security.auth.model.dto.AuthResponseDTO;
 import com.btc.backend.core.security.auth.model.enums.ExternalProvider;
@@ -27,15 +28,18 @@ public class AuthenticationService {
     private final JwtGenerationService jwtGenerationService;
     private final AuthResponseBuilder authResponseBuilder;
     private final GoogleTokenValidityProvider googleTokenValidityProvider;
+    private final AccountService accountService;
 
     public AuthenticationService(AuthenticationManager authenticationManager,
                                  JwtGenerationService jwtGenerationService,
                                  AuthResponseBuilder authResponseBuilder,
-                                 GoogleTokenValidityProvider googleTokenValidityProvider) {
+                                 GoogleTokenValidityProvider googleTokenValidityProvider,
+                                 AccountService accountService) {
         this.authenticationManager = authenticationManager;
         this.jwtGenerationService = jwtGenerationService;
         this.authResponseBuilder = authResponseBuilder;
         this.googleTokenValidityProvider = googleTokenValidityProvider;
+        this.accountService = accountService;
     }
 
     public ResponseEntity<AuthResponseDTO> authenticate(AuthRequestDTO request) {
@@ -61,7 +65,9 @@ public class AuthenticationService {
         if (!token.isEmpty()) {
             if (ExternalProvider.valueOf(provider.toUpperCase()) == ExternalProvider.GOOGLE) {
                 Payload payload = googleTokenValidityProvider.verifyAndExtract(token);
-                String email = payload.getEmail();
+                if (accountService.findAccountByEmail(payload.getEmail()).isPresent()) {
+                    return ResponseEntity.ok().build();
+                }
             }
         }
         return ResponseEntity.badRequest().build();

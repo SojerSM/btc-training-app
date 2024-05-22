@@ -30,7 +30,7 @@ public class TaskServiceImpl implements TaskService {
     public List<TaskDTO> findAll(String filter, String title, long accountId) {
         List<Task> tasks = new ArrayList<>();
         if (filter == null && title != null) {
-            return taskRepository.findAllByTitleContaining(title).stream()
+            return taskRepository.findAllByAccountIdAndTitleContaining(title, accountId).stream()
                     .map(taskMapper::map)
                     .toList();
         }
@@ -39,20 +39,20 @@ public class TaskServiceImpl implements TaskService {
                 tasks = taskRepository.findAllByAccountId(accountId);
             }
             if (filter.toUpperCase().equals(TaskFilter.DONE.toString())) {
-                tasks = taskRepository.findAllByFinished(true);
+                tasks = taskRepository.findAllByFinishedAndAccountId(true, accountId);
             }
             if (filter.toUpperCase().equals(TaskFilter.PENDING.toString())) {
-                tasks = taskRepository.findAllByFinished(false).stream()
+                tasks = taskRepository.findAllByFinishedAndAccountId(false, accountId).stream()
                         .filter(task -> task.getDeadline().isAfter(LocalDateTime.now()))
                         .toList();
             }
             if (filter.toUpperCase().equals(TaskFilter.OUTDATED.toString())) {
-                tasks = taskRepository.findAllByDeadlineBefore(LocalDateTime.now()).stream()
+                tasks = taskRepository.findAllByDeadlineBeforeAndAccountId(LocalDateTime.now(), accountId).stream()
                         .filter(task -> !task.getFinished())
                         .toList();
             }
             if (title != null) {
-                tasks = taskRepository.findAllByTitleContaining(title);
+                tasks = taskRepository.findAllByAccountIdAndTitleContaining(title, accountId);
             }
         }
 

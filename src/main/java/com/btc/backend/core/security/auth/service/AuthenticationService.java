@@ -1,9 +1,12 @@
 package com.btc.backend.core.security.auth.service;
 
 import com.btc.backend.app.account.api.AccountService;
+import com.btc.backend.app.account.core.model.entity.Account;
+import com.btc.backend.core.common.model.entity.Provider;
+import com.btc.backend.core.common.repository.ProviderRepository;
 import com.btc.backend.core.security.auth.model.dto.AuthRequestDTO;
 import com.btc.backend.core.security.auth.model.dto.AuthResponseDTO;
-import com.btc.backend.core.security.auth.model.enums.ExternalProvider;
+import com.btc.backend.core.common.model.enums.ProviderType;
 import com.btc.backend.core.security.auth.util.AuthResponseBuilder;
 import com.btc.backend.core.security.auth.util.GoogleTokenValidityProvider;
 import com.btc.backend.core.security.jwt.service.JwtGenerationService;
@@ -19,6 +22,9 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 @Service
 public class AuthenticationService {
 
@@ -29,17 +35,20 @@ public class AuthenticationService {
     private final AuthResponseBuilder authResponseBuilder;
     private final GoogleTokenValidityProvider googleTokenValidityProvider;
     private final AccountService accountService;
+    private final ProviderRepository providerRepository;
 
     public AuthenticationService(AuthenticationManager authenticationManager,
                                  JwtGenerationService jwtGenerationService,
                                  AuthResponseBuilder authResponseBuilder,
                                  GoogleTokenValidityProvider googleTokenValidityProvider,
-                                 AccountService accountService) {
+                                 AccountService accountService,
+                                 ProviderRepository providerRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtGenerationService = jwtGenerationService;
         this.authResponseBuilder = authResponseBuilder;
         this.googleTokenValidityProvider = googleTokenValidityProvider;
         this.accountService = accountService;
+        this.providerRepository = providerRepository;
     }
 
     public ResponseEntity<AuthResponseDTO> authenticate(AuthRequestDTO request) {
@@ -62,14 +71,22 @@ public class AuthenticationService {
     public ResponseEntity<AuthResponseDTO> verifyWithProvider(String provider, HttpServletRequest request) {
         String token = request.getHeader(HttpHeaders.AUTHORIZATION);
 
-        if (!token.isEmpty()) {
-            if (ExternalProvider.valueOf(provider.toUpperCase()) == ExternalProvider.GOOGLE) {
-                Payload payload = googleTokenValidityProvider.verifyAndExtract(token);
-                if (accountService.findAccountByEmail(payload.getEmail()).isPresent()) {
-                    return ResponseEntity.ok().build();
-                }
+        if (token.isEmpty()) {
+            return ResponseEntity.badRequest().build();
+        }
+
+        if (ProviderType.valueOf(provider.toUpperCase()) == ProviderType.GOOGLE) {
+            Payload payload = googleTokenValidityProvider.verifyAndExtract(token);
+            Optional<Account> account = accountService.findAccountByEmail(payload.getEmail());
+            Optional<Provider> googleProvider = providerRepository.findById(2);
+
+            if (account.isPresent() && googleProvider.isPresent() &&
+                    account.get().getAllowedAuthProviders().contains(googleProvider.get())) {
+                String accessToken = jwtGenerationService.generateAccessToken(account.get().getUsername());
+
+                return ResponseEntity.status(HttpStatus.OK).body(authResponseBuilder.build(accessToken));
             }
         }
-        return ResponseEntity.badRequest().build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 }

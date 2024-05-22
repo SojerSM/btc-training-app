@@ -6,4 +6,12 @@ spring:
     driver-class-name: org.postgresql.Driver
   jpa:
     database: postgresql
+    hibernate:
+      ddl-auto: create
+    defer-datasource-initialization: true
+  sql:
+    init:
+      mode: always
+      data-locations: classpath:scripts/data.sql
+
 

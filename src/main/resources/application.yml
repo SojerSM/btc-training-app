@@ -19,7 +19,6 @@ spring:
             scope:
               - email
               - profile
-
 springdoc:
   swagger-ui:
     path: /swagger-ui.html

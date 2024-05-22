@@ -45,7 +45,8 @@ public class SecurityConfig {
                         requests
                                 .requestMatchers(
                                         RestEndpoints.API_BASE + "/auth/authenticate",
-                                        RestEndpoints.API_BASE + "/auth/verifyWithProvider").permitAll()
+                                        RestEndpoints.API_BASE + "/auth/verifyWithProvider",
+                                        "/assets/**","/index.html","/", "/swagger-ui.html").permitAll()
                                 .anyRequest().authenticated())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)

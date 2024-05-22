@@ -8,4 +8,5 @@ public interface AccountService {
 
     Optional<Account> findAccountByEmail(String email);
     Optional<Account> findByUsername(String username);
+    Optional<Account> findById(long id);
 }

@@ -10,6 +10,7 @@ public class TaskDTO {
     private String title;
     private LocalDateTime deadline;
     private boolean finished;
+    private long accountId;
 
     public TaskDTO() {
         // empty constructor
@@ -45,5 +46,13 @@ public class TaskDTO {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    public long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
     }
 }

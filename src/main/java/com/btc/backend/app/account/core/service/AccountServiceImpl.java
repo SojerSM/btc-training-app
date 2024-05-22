@@ -1,7 +1,6 @@
 package com.btc.backend.app.account.core.service;
 
 import com.btc.backend.app.account.api.AccountService;
-import com.btc.backend.app.account.core.model.dto.AccountResponseDTO;
 import com.btc.backend.app.account.core.model.entity.Account;
 import com.btc.backend.app.account.core.repository.AccountRepository;
 import org.springframework.stereotype.Service;
@@ -25,5 +24,10 @@ public class AccountServiceImpl implements AccountService {
     @Override
     public Optional<Account> findByUsername(String username) {
         return accountRepository.findByUsername(username);
+    }
+
+    @Override
+    public Optional<Account> findById(long id) {
+        return accountRepository.findById(id);
     }
 }

@@ -14,6 +14,7 @@ public class TaskRequestDTO {
     @NotNull
     private LocalDateTime deadline;
     private boolean finished;
+    private long accountId;
 
     public TaskRequestDTO() {
         // empty constructor
@@ -41,5 +42,13 @@ public class TaskRequestDTO {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    public long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
     }
 }

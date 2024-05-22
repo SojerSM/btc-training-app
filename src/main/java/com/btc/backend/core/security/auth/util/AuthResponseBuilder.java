@@ -16,11 +16,12 @@ public class AuthResponseBuilder {
         this.authPropertiesProvider = authPropertiesProvider;
     }
 
-    public AuthResponseDTO build(String accessToken) {
+    public AuthResponseDTO build(String accessToken, long id) {
         AuthResponseDTO response = new AuthResponseDTO();
         response.setAccessToken(accessToken);
         response.setExpireAt(LocalDateTime.now().plus(
                 Long.parseLong(authPropertiesProvider.getAccessExpDelay()), ChronoUnit.MILLIS));
+        response.setAccountId(id);
 
         return response;
     }

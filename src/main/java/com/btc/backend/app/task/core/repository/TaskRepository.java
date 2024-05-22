@@ -12,6 +12,7 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
+    List<Task> findAllByAccountId(long accountId);
     List<Task> findAllByFinished(boolean isFinished);
     List<Task> findAllByDeadlineBefore(LocalDateTime date);
 

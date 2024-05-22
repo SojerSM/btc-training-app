@@ -9,7 +9,6 @@ import com.btc.backend.app.task.core.model.mapper.TaskMapper;
 import com.btc.backend.app.task.core.repository.TaskRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,7 +27,7 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> findAll(String filter, String title) {
+    public List<TaskDTO> findAll(String filter, String title, long accountId) {
         List<Task> tasks = new ArrayList<>();
         if (filter == null && title != null) {
             return taskRepository.findAllByTitleContaining(title).stream()
@@ -37,7 +36,7 @@ public class TaskServiceImpl implements TaskService {
         }
         if (filter != null) {
             if (filter.toUpperCase().equals(TaskFilter.ALL.toString())) {
-                tasks = taskRepository.findAll();
+                tasks = taskRepository.findAllByAccountId(accountId);
             }
             if (filter.toUpperCase().equals(TaskFilter.DONE.toString())) {
                 tasks = taskRepository.findAllByFinished(true);

@@ -1,5 +1,6 @@
 package com.btc.backend.app.task.core.model.entity;
 
+import com.btc.backend.app.account.core.model.entity.Account;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.*;
 
@@ -17,14 +18,19 @@ public class Task {
     private LocalDateTime deadline;
     private boolean finished;
 
+    @ManyToOne
+    @JoinColumn(name = "account_id")
+    private Account account;
+
     public Task() {
         // empty constructor
     }
 
-    public Task(String title, LocalDateTime deadline, boolean finished) {
+    public Task(String title, LocalDateTime deadline, boolean finished, Account account) {
         this.title = title;
         this.deadline = deadline;
         this.finished = finished;
+        this.account = account;
     }
 
     public long getId() {
@@ -57,5 +63,13 @@ public class Task {
 
     public void setFinished(boolean finished) {
         this.finished = finished;
+    }
+
+    public Account getAccount() {
+        return account;
+    }
+
+    public void setAccount(Account account) {
+        this.account = account;
     }
 }

@@ -63,9 +63,10 @@ public class AuthenticationService {
         }
 
         String accessToken = jwtGenerationService.generateAccessToken(request.getUsername());
+        long id = accountService.findByUsername(request.getUsername()).orElseThrow().getId();
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                authResponseBuilder.build(accessToken));
+                authResponseBuilder.build(accessToken, id));
     }
 
     public ResponseEntity<AuthResponseDTO> verifyWithProvider(String provider, HttpServletRequest request) {
@@ -83,8 +84,9 @@ public class AuthenticationService {
             if (account.isPresent() && googleProvider.isPresent() &&
                     account.get().getAllowedAuthProviders().contains(googleProvider.get())) {
                 String accessToken = jwtGenerationService.generateAccessToken(account.get().getUsername());
+                long id = account.get().getId();
 
-                return ResponseEntity.status(HttpStatus.OK).body(authResponseBuilder.build(accessToken));
+                return ResponseEntity.status(HttpStatus.OK).body(authResponseBuilder.build(accessToken, id));
             }
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();

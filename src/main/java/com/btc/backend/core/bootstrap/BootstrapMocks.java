@@ -34,18 +34,18 @@ public class BootstrapMocks implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        loadMockedTasks();
         loadMockedAccount();
+        loadMockedTasks();
     }
 
     private void loadMockedTasks() {
         if (taskRepository.findAll().isEmpty()) {
             List<Task> mocked = new ArrayList<>();
 
-            mocked.add(new Task("Zakupy", LocalDateTime.now(), false));
-            mocked.add(new Task("Spotkanie z klientem", LocalDateTime.now(), false));
-            mocked.add(new Task("Kajaki", LocalDateTime.now(), true));
-            mocked.add(new Task("Naprawić zlew", LocalDateTime.now(), false));
+            mocked.add(new Task("Zakupy", LocalDateTime.now(), false, accountRepository.findById(1L).orElseThrow()));
+            mocked.add(new Task("Spotkanie z klientem", LocalDateTime.now(), false, accountRepository.findById(1L).orElseThrow()));
+            mocked.add(new Task("Kajaki", LocalDateTime.now(), true, accountRepository.findById(2L).orElseThrow()));
+            mocked.add(new Task("Naprawić zlew", LocalDateTime.now(), false,accountRepository.findById(2L).orElseThrow()));
 
             taskRepository.saveAll(mocked);
         }

@@ -7,11 +7,12 @@ spring:
   jpa:
     database: postgresql
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     defer-datasource-initialization: true
   sql:
     init:
       mode: always
       data-locations: classpath:scripts/data.sql
+      schema-locations: classpath:scripts/schema.sql
 
 

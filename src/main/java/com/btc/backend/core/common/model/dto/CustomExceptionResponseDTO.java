@@ -1,4 +1,4 @@
-package com.btc.backend.core.common.dto;
+package com.btc.backend.core.common.model.dto;
 
 import java.time.LocalDateTime;
 

@@ -1,4 +1,4 @@
-package com.btc.backend.core.security.auth.dto;
+package com.btc.backend.core.security.auth.model.dto;
 
 import java.time.LocalDateTime;
 
@@ -6,6 +6,7 @@ public class AuthResponseDTO {
 
     private String accessToken;
     private LocalDateTime expireAt;
+    private long accountId;
 
     public AuthResponseDTO() {
         //empty constructor
@@ -25,5 +26,13 @@ public class AuthResponseDTO {
 
     public void setExpireAt(LocalDateTime expireAt) {
         this.expireAt = expireAt;
+    }
+
+    public long getAccountId() {
+        return accountId;
+    }
+
+    public void setAccountId(long accountId) {
+        this.accountId = accountId;
     }
 }

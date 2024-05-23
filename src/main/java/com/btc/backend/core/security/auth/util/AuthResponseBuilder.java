@@ -1,6 +1,6 @@
 package com.btc.backend.core.security.auth.util;
 
-import com.btc.backend.core.security.auth.dto.AuthResponseDTO;
+import com.btc.backend.core.security.auth.model.dto.AuthResponseDTO;
 import com.btc.backend.core.security.jwt.util.AuthPropertiesProvider;
 import org.springframework.stereotype.Component;
 
@@ -16,11 +16,12 @@ public class AuthResponseBuilder {
         this.authPropertiesProvider = authPropertiesProvider;
     }
 
-    public AuthResponseDTO build(String accessToken) {
+    public AuthResponseDTO build(String accessToken, long id) {
         AuthResponseDTO response = new AuthResponseDTO();
         response.setAccessToken(accessToken);
         response.setExpireAt(LocalDateTime.now().plus(
                 Long.parseLong(authPropertiesProvider.getAccessExpDelay()), ChronoUnit.MILLIS));
+        response.setAccountId(id);
 
         return response;
     }

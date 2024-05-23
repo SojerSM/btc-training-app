@@ -21,9 +21,10 @@ public class TaskController {
     }
 
     @GetMapping
-    public List<TaskDTO> findAll(@RequestParam(name = "filter", required = false) String filter,
+    public List<TaskDTO> findAll(@RequestParam(name = "accountId") long accountId,
+                                 @RequestParam(name = "filter", required = false) String filter,
                                  @RequestParam(name = "title", required = false) String title) {
-        return taskService.findAll(filter, title);
+        return taskService.findAll(filter, title, accountId);
     }
 
     @GetMapping(value = "/{id}")

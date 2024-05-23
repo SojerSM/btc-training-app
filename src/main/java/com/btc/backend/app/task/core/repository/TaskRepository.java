@@ -12,9 +12,9 @@ import java.util.List;
 @Repository
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
-    List<Task> findAllByFinished(boolean isFinished);
-    List<Task> findAllByDeadlineBefore(LocalDateTime date);
-
-    @Query("SELECT e from Task e WHERE LOWER(e.title) LIKE LOWER(CONCAT('%', :title, '%'))")
-    List<Task> findAllByTitleContaining(@Param("title") String title);
+    List<Task> findAllByAccountId(long accountId);
+    List<Task> findAllByFinishedAndAccountId(boolean isFinished, long accountId);
+    List<Task> findAllByDeadlineBeforeAndAccountId(LocalDateTime date, long accountId);
+    @Query("SELECT e from Task e WHERE e.account.id = :accountId AND LOWER(e.title) LIKE LOWER(CONCAT('%', :title, '%'))")
+    List<Task> findAllByAccountIdAndTitleContaining(@Param("title") String title, @Param("accountId") long accountId);
 }

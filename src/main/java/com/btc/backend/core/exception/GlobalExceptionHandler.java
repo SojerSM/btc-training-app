@@ -1,6 +1,6 @@
 package com.btc.backend.core.exception;
 
-import com.btc.backend.core.common.dto.CustomExceptionResponseDTO;
+import com.btc.backend.core.common.model.dto.CustomExceptionResponseDTO;
 import com.btc.backend.core.exception.exceptions.NotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

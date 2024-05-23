@@ -1,4 +1,4 @@
-package com.btc.backend.core.security.auth.dto;
+package com.btc.backend.core.security.auth.model.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 

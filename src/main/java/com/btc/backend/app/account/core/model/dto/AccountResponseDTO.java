@@ -3,6 +3,7 @@ package com.btc.backend.app.account.core.model.dto;
 public class AccountResponseDTO {
 
     private String username;
+    private String email;
 
     public AccountResponseDTO() {
         // empty constructor
@@ -14,5 +15,13 @@ public class AccountResponseDTO {
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 }

@@ -1,9 +1,7 @@
 package com.btc.backend.app.account.core.model.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.btc.backend.core.common.model.entity.Provider;
+import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -18,6 +16,16 @@ public class Account implements UserDetails {
     private long id;
     private String username;
     private String password;
+    private String email;
+
+    @ManyToMany
+    @JoinTable(
+            name = "account_provider",
+            joinColumns = @JoinColumn(name = "account_id"),
+            inverseJoinColumns = @JoinColumn(name = "provider_id")
+    )
+    private List<Provider> allowedAuthProviders;
+
 
     public Account() {
         // empty controller
@@ -70,5 +78,21 @@ public class Account implements UserDetails {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public List<Provider> getAllowedAuthProviders() {
+        return allowedAuthProviders;
+    }
+
+    public void setAllowedAuthProviders(List<Provider> allowedAuthProviders) {
+        this.allowedAuthProviders = allowedAuthProviders;
     }
 }

@@ -9,7 +9,6 @@ import com.btc.backend.app.task.core.model.mapper.TaskMapper;
 import com.btc.backend.app.task.core.repository.TaskRepository;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -28,32 +27,32 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
-    public List<TaskDTO> findAll(String filter, String title) {
+    public List<TaskDTO> findAll(String filter, String title, long accountId) {
         List<Task> tasks = new ArrayList<>();
         if (filter == null && title != null) {
-            return taskRepository.findAllByTitleContaining(title).stream()
+            return taskRepository.findAllByAccountIdAndTitleContaining(title, accountId).stream()
                     .map(taskMapper::map)
                     .toList();
         }
         if (filter != null) {
             if (filter.toUpperCase().equals(TaskFilter.ALL.toString())) {
-                tasks = taskRepository.findAll();
+                tasks = taskRepository.findAllByAccountId(accountId);
             }
             if (filter.toUpperCase().equals(TaskFilter.DONE.toString())) {
-                tasks = taskRepository.findAllByFinished(true);
+                tasks = taskRepository.findAllByFinishedAndAccountId(true, accountId);
             }
             if (filter.toUpperCase().equals(TaskFilter.PENDING.toString())) {
-                tasks = taskRepository.findAllByFinished(false).stream()
+                tasks = taskRepository.findAllByFinishedAndAccountId(false, accountId).stream()
                         .filter(task -> task.getDeadline().isAfter(LocalDateTime.now()))
                         .toList();
             }
             if (filter.toUpperCase().equals(TaskFilter.OUTDATED.toString())) {
-                tasks = taskRepository.findAllByDeadlineBefore(LocalDateTime.now()).stream()
+                tasks = taskRepository.findAllByDeadlineBeforeAndAccountId(LocalDateTime.now(), accountId).stream()
                         .filter(task -> !task.getFinished())
                         .toList();
             }
             if (title != null) {
-                tasks = taskRepository.findAllByTitleContaining(title);
+                tasks = taskRepository.findAllByAccountIdAndTitleContaining(title, accountId);
             }
         }
 

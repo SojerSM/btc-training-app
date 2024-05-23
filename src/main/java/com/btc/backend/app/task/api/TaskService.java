@@ -9,7 +9,7 @@ import java.util.Optional;
 
 public interface TaskService {
 
-    List<TaskDTO> findAll(String filter, String title);
+    List<TaskDTO> findAll(String filter, String title, long accountId);
     Optional<TaskDTO> findById(long id);
     ResponseEntity<?> add(TaskRequestDTO taskRequestDTO);
     ResponseEntity<?> update(long id, TaskRequestDTO taskRequestDTO);

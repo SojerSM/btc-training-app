@@ -37,8 +37,8 @@ Aby uruchomić aplikację na serwerze lokalnym, należy:
 
 1. Zainstalować lokalnie bazę danych PostgreSQL, JDK właściwe dla wersji
 języka Java, NodeJS oraz Tomcat.
-2. Utworzyć bazę danych i skonfigurować systemową zmienną środowiskową
-do przechowywania hasła superusera według schematu:
+2. Utworzyć bazę danych `btc-training` i skonfigurować systemową zmienną środowiskową
+do przechowywania hasła superusera `postgres` według schematu:
 > POSTGRES_SUPERUSER_PWD: twoje_hasło_superusera
 3. Pobrać zdalne repozytorium projektu za pomocą HTTPS lub SSH.
 4. Uruchomić taska `gradle build` (zostanie wygenerowany plik .war w folderze `build/libs`)
@@ -67,7 +67,7 @@ programowalnie stworzyć nowego usera. W tym celu:
 1. Otwórz projekt w IDE i nawiguj do `src/main/java/com/btc/backend/core/bootstrap/BootstrapMocks.`
 2. Stwórz nowego użytkownika wg. przykładu:
 ```java
-            Account account = new Account();
+            Account first = new Account();
             first.setUsername("nazwa_użytkownika");
             first.setPassword(passwordEncoder.encode("hasło"));
             first.setEmail("email_istniejącego_konta_google");

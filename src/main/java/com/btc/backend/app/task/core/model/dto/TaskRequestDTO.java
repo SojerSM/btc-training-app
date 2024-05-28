@@ -1,14 +1,13 @@
 package com.btc.backend.app.task.core.model.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import jakarta.validation.constraints.FutureOrPresent;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.LocalDateTime;
 
 public class TaskRequestDTO {
 
-    @NotNull
+    @NotBlank
     private String title;
 
     @NotNull

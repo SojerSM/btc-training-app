@@ -29,4 +29,9 @@ public class AuthController {
                                                               HttpServletRequest request) {
         return authenticationService.verifyWithProvider(provider, request);
     }
+
+    @GetMapping(value = "/checkAuth")
+    public ResponseEntity<?> checkAuth() {
+        return ResponseEntity.ok().build();
+    }
 }

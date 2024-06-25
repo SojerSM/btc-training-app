@@ -30,4 +30,9 @@ public class AccountServiceImpl implements AccountService {
     public Optional<Account> findById(long id) {
         return accountRepository.findById(id);
     }
+
+    @Override
+    public Account save(Account account) {
+        return accountRepository.save(account);
+    }
 }

@@ -7,4 +7,6 @@ public class RestEndpoints {
     public static final String TASK_PATH = API_BASE + "/task";
 
     public static final String AUTH_PATH = API_BASE + "/auth";
+
+    public static final String ACCOUNT_PATH = API_BASE + "/account";
 }

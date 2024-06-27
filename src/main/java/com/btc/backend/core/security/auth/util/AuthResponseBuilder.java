@@ -16,13 +16,13 @@ public class AuthResponseBuilder {
         this.authPropertiesProvider = authPropertiesProvider;
     }
 
-    public AuthResponseDTO build(String accessToken, long id, String qrImage) {
+    public AuthResponseDTO build(String accessToken, long id, String qrImage, boolean tfa) {
         AuthResponseDTO response = new AuthResponseDTO();
         response.setAccessToken(accessToken);
         response.setExpireAt(LocalDateTime.now().plus(
                 Long.parseLong(authPropertiesProvider.getAccessExpDelay()), ChronoUnit.MILLIS));
         response.setAccountId(id);
-        response.setTfaEnabled(accessToken != null);
+        response.setTfaEnabled(tfa);
         response.setSecretImageUri(qrImage);
 
         return response;

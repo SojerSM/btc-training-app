@@ -28,6 +28,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -78,7 +79,12 @@ public class AuthenticationService {
         long id = saved.getId();
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                authResponseBuilder.build(accessToken, id, twoFactorAuthenticationService.generateQrCodeImageUri(account.getSecret())));
+                authResponseBuilder.build(
+                        accessToken,
+                        id,
+                        request.isTfaEnabled() ?
+                                twoFactorAuthenticationService.generateQrCodeImageUri(account.getSecret()) : null,
+                        request.isTfaEnabled()));
     }
 
     public ResponseEntity<AuthResponseDTO> authenticate(AuthRequestDTO request) {
@@ -105,7 +111,7 @@ public class AuthenticationService {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(
-                authResponseBuilder.build(accessToken, id, null));
+                authResponseBuilder.build(accessToken, id, null, false));
     }
 
     public ResponseEntity<AuthResponseDTO> verifyWithProvider(String provider, HttpServletRequest request) {
@@ -125,7 +131,7 @@ public class AuthenticationService {
                 String accessToken = jwtGenerationService.generateAccessToken(account.get().getUsername());
                 long id = account.get().getId();
 
-                return ResponseEntity.status(HttpStatus.OK).body(authResponseBuilder.build(accessToken, id, null));
+                return ResponseEntity.status(HttpStatus.OK).body(authResponseBuilder.build(accessToken, id, null, account.get().isTfaEnabled()));
             }
         }
         return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
@@ -143,6 +149,30 @@ public class AuthenticationService {
         String accessToken = jwtGenerationService.generateAccessToken(verificationRequest.getUsername());
         long id = account.getId();
 
-        return ResponseEntity.ok(authResponseBuilder.build(accessToken, id, null));
+        return ResponseEntity.ok(authResponseBuilder.build(accessToken, id, null, account.isTfaEnabled()));
+    }
+
+    public ResponseEntity<Boolean> findIsTfaEnabled(long id) {
+        Account account = accountService.findById(id).orElseThrow(EntityNotFoundException::new);
+
+        return ResponseEntity.ok(account.isTfaEnabled());
+    }
+
+    public ResponseEntity<AuthResponseDTO> updateTfaSettings(long id, boolean tfa) {
+        Account account = accountService.findById(id).orElseThrow(EntityNotFoundException::new);
+
+        account.setTfaEnabled(tfa);
+        accountService.save(account);
+        AuthResponseDTO response = new AuthResponseDTO();
+
+        if (tfa) {
+            account.setSecret(twoFactorAuthenticationService.generateNewSecret());
+            response.setSecretImageUri(twoFactorAuthenticationService.generateQrCodeImageUri(account.getSecret()));
+            return ResponseEntity.ok(response);
+        } else {
+            account.setSecret(null);
+        }
+
+        return ResponseEntity.ok().build();
     }
 }

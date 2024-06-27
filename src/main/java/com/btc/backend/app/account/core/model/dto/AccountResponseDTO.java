@@ -1,5 +1,8 @@
 package com.btc.backend.app.account.core.model.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class AccountResponseDTO {
 
     private String username;

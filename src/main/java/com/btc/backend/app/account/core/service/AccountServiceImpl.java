@@ -35,4 +35,10 @@ public class AccountServiceImpl implements AccountService {
     public Account save(Account account) {
         return accountRepository.save(account);
     }
+
+    @Override
+    public String findUsernameById(long id) {
+        Account account = accountRepository.findById(id).orElseThrow();
+        return account.getUsername();
+    }
 }

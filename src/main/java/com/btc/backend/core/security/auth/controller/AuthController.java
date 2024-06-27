@@ -22,6 +22,16 @@ public class AuthController {
         this.authenticationService = authenticationService;
     }
 
+    @GetMapping(value = "/{id}/tfa")
+    public ResponseEntity<Boolean> findIsTfaEnabled(@PathVariable(name = "id") long id) {
+        return authenticationService.findIsTfaEnabled(id);
+    }
+
+    @PutMapping(value = "/{id}/tfa")
+    public ResponseEntity<AuthResponseDTO> updateTfaSettings(@PathVariable(name = "id") long id, @RequestBody boolean tfa) {
+        return authenticationService.updateTfaSettings(id,tfa);
+    }
+
     @PostMapping(value = "/register")
     public ResponseEntity<AuthResponseDTO> register(@RequestBody @Valid RegisterRequestDTO request) {
         return authenticationService.register(request);

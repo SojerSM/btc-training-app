@@ -12,4 +12,6 @@ public interface AccountService {
     Optional<Account> findById(long id);
 
     Account save(Account account);
+
+    String findUsernameById(long id);
 }

@@ -3,6 +3,7 @@ package com.btc.backend.core.security.auth.model.dto;
 public class VerificationRequest {
     private String username;
     private String code;
+    private String secret;
 
     public VerificationRequest() {
         // empty constructor
@@ -22,5 +23,13 @@ public class VerificationRequest {
 
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }

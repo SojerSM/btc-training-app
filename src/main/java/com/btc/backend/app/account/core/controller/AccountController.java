@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @RestController
 @RequestMapping(RestEndpoints.ACCOUNT_PATH)
 public class AccountController {
@@ -20,8 +23,10 @@ public class AccountController {
     }
 
     @GetMapping("/{id}/username")
-    public ResponseEntity<String> findById(@PathVariable(name = "id") long id) {
+    public ResponseEntity<Map<String,String>> findById(@PathVariable(name = "id") long id) {
         String username = accountService.findUsernameById(id);
-        return ResponseEntity.ok(username);
+        Map<String,String> response = new HashMap<>();
+        response.put("username",username);
+        return ResponseEntity.ok(response);
     }
 }

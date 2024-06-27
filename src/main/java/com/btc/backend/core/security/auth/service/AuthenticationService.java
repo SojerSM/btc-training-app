@@ -2,6 +2,7 @@ package com.btc.backend.core.security.auth.service;
 
 import com.btc.backend.app.account.api.AccountService;
 import com.btc.backend.app.account.core.model.entity.Account;
+import com.btc.backend.app.account.core.repository.AccountRepository;
 import com.btc.backend.core.common.model.entity.Provider;
 import com.btc.backend.core.common.model.enums.ProviderType;
 import com.btc.backend.core.common.repository.ProviderRepository;
@@ -29,6 +30,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -44,6 +47,7 @@ public class AuthenticationService {
     private final ProviderRepository providerRepository;
     private final TwoFactorAuthenticationService twoFactorAuthenticationService;
     private final PasswordEncoder passwordEncoder;
+    private final AccountRepository accountRepository;
 
     public AuthenticationService(AuthenticationManager authenticationManager,
                                  JwtGenerationService jwtGenerationService,
@@ -52,7 +56,7 @@ public class AuthenticationService {
                                  AccountService accountService,
                                  ProviderRepository providerRepository,
                                  TwoFactorAuthenticationService twoFactorAuthenticationService,
-                                 PasswordEncoder passwordEncoder) {
+                                 PasswordEncoder passwordEncoder, AccountRepository accountRepository) {
         this.authenticationManager = authenticationManager;
         this.jwtGenerationService = jwtGenerationService;
         this.authResponseBuilder = authResponseBuilder;
@@ -61,6 +65,7 @@ public class AuthenticationService {
         this.providerRepository = providerRepository;
         this.twoFactorAuthenticationService = twoFactorAuthenticationService;
         this.passwordEncoder = passwordEncoder;
+        this.accountRepository = accountRepository;
     }
 
     public ResponseEntity<AuthResponseDTO> register(RegisterRequestDTO request) {
@@ -142,37 +147,60 @@ public class AuthenticationService {
         Account account = accountService.findByUsername(verificationRequest.getUsername()).orElseThrow(
                 () -> new EntityNotFoundException(String.format("No user found with %s", verificationRequest.getUsername()))
         );
-        if (twoFactorAuthenticationService.isOtpNotValid(account.getSecret(), verificationRequest.getCode())) {
+
+        boolean isNotValid = !(verificationRequest.getSecret() == null)
+                ? twoFactorAuthenticationService.isOtpNotValid(verificationRequest.getSecret(), verificationRequest.getCode())
+                : twoFactorAuthenticationService.isOtpNotValid(account.getSecret(), verificationRequest.getCode());
+
+        if (isNotValid) {
             throw new BadCredentialsException(("Code is not correct"));
         }
 
         String accessToken = jwtGenerationService.generateAccessToken(verificationRequest.getUsername());
         long id = account.getId();
 
+        if (verificationRequest.getSecret() != null) {
+            account.setSecret(verificationRequest.getSecret());
+            account.setTfaEnabled(true);
+            accountRepository.save(account);
+        }
+
         return ResponseEntity.ok(authResponseBuilder.build(accessToken, id, null, account.isTfaEnabled()));
     }
 
-    public ResponseEntity<Boolean> findIsTfaEnabled(long id) {
+    public ResponseEntity<Map<String,Boolean>> findIsTfaEnabled(long id) {
         Account account = accountService.findById(id).orElseThrow(EntityNotFoundException::new);
+        Map<String, Boolean> response = new HashMap<>();
+        response.put("tfaEnabled",account.isTfaEnabled());
+        response.put("hasSecret", !account.getSecret().isEmpty());
 
-        return ResponseEntity.ok(account.isTfaEnabled());
+        return ResponseEntity.ok(response);
     }
 
     public ResponseEntity<AuthResponseDTO> updateTfaSettings(long id, boolean tfa) {
         Account account = accountService.findById(id).orElseThrow(EntityNotFoundException::new);
 
         account.setTfaEnabled(tfa);
-        accountService.save(account);
         AuthResponseDTO response = new AuthResponseDTO();
 
         if (tfa) {
             account.setSecret(twoFactorAuthenticationService.generateNewSecret());
             response.setSecretImageUri(twoFactorAuthenticationService.generateQrCodeImageUri(account.getSecret()));
+            accountService.save(account);
             return ResponseEntity.ok(response);
         } else {
             account.setSecret(null);
+            accountService.save(account);
         }
 
         return ResponseEntity.ok().build();
+    }
+
+    public Map<String, String> generateQr() {
+        String secret = twoFactorAuthenticationService.generateNewSecret();
+        Map<String, String> response = new HashMap<>();
+        response.put("secretImageUri", twoFactorAuthenticationService.generateQrCodeImageUri(secret));
+        response.put("secret", secret);
+        return response;
     }
 }

@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Map;
+
 @RestController
 @RequestMapping(value = RestEndpoints.AUTH_PATH)
 public class AuthController {
@@ -23,12 +25,13 @@ public class AuthController {
     }
 
     @GetMapping(value = "/{id}/tfa")
-    public ResponseEntity<Boolean> findIsTfaEnabled(@PathVariable(name = "id") long id) {
+    public ResponseEntity<Map<String, Boolean>> findIsTfaEnabled(@PathVariable(name = "id") long id) {
         return authenticationService.findIsTfaEnabled(id);
     }
 
     @PutMapping(value = "/{id}/tfa")
     public ResponseEntity<AuthResponseDTO> updateTfaSettings(@PathVariable(name = "id") long id, @RequestBody boolean tfa) {
+
         return authenticationService.updateTfaSettings(id,tfa);
     }
 
@@ -56,5 +59,10 @@ public class AuthController {
     @PostMapping("/verifyQr")
     public ResponseEntity<?> verifyQrCode(@RequestBody VerificationRequest verificationRequest) {
         return ResponseEntity.ok(authenticationService.verifyQrCode(verificationRequest));
+    }
+
+    @PostMapping("/generateQr")
+    public ResponseEntity<?> generateQr() {
+        return ResponseEntity.ok(authenticationService.generateQr());
     }
 }

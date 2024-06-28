@@ -9,6 +9,8 @@ CREATE TABLE account
     email    varchar(255) not null,
     password varchar(255) not null,
     username varchar(255) not null,
+    secret varchar(255),
+    tfa_enabled boolean not null,
     primary key (id)
 );
 

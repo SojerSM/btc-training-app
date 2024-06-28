@@ -6,6 +6,7 @@ import com.btc.backend.app.task.core.model.entity.Task;
 import com.btc.backend.app.task.core.repository.TaskRepository;
 import com.btc.backend.core.common.model.entity.Provider;
 import com.btc.backend.core.common.repository.ProviderRepository;
+import com.btc.backend.core.security.tfa.TwoFactorAuthenticationService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -21,15 +22,18 @@ public class BootstrapMocks implements CommandLineRunner {
     private final AccountRepository accountRepository;
     private final PasswordEncoder passwordEncoder;
     private final ProviderRepository providerRepository;
+    private final TwoFactorAuthenticationService tfaService;
 
     public BootstrapMocks(TaskRepository taskRepository,
                           AccountRepository accountRepository,
                           PasswordEncoder passwordEncoder,
-                          ProviderRepository providerRepository) {
+                          ProviderRepository providerRepository,
+                          TwoFactorAuthenticationService tfaService) {
         this.taskRepository = taskRepository;
         this.accountRepository = accountRepository;
         this.passwordEncoder = passwordEncoder;
         this.providerRepository = providerRepository;
+        this.tfaService = tfaService;
     }
 
     @Override
@@ -60,12 +64,15 @@ public class BootstrapMocks implements CommandLineRunner {
             first.setPassword(passwordEncoder.encode("password"));
             first.setEmail("seb.maz1996@gmail.com");
             first.setAllowedAuthProviders(providers);
+            first.setTfaEnabled(true);
+            first.setSecret(tfaService.generateNewSecret());
 
             Account second = new Account();
             second.setUsername("user2");
             second.setPassword(passwordEncoder.encode("password"));
             second.setEmail("s.mazur.studia@gmail.com");
             second.setAllowedAuthProviders(List.of(providers.getFirst()));
+            second.setTfaEnabled(false);
 
             accountRepository.save(first);
             accountRepository.save(second);

@@ -46,6 +46,8 @@ public class SecurityConfig {
                                 .requestMatchers(
                                         RestEndpoints.API_BASE + "/auth/authenticate",
                                         RestEndpoints.API_BASE + "/auth/verifyWithProvider",
+                                        RestEndpoints.API_BASE + "/auth/verifyQr",
+                                        RestEndpoints.API_BASE + "/auth/register",
                                         "/assets/**","/index.html","/", "/swagger-ui.html").permitAll()
                                 .anyRequest().authenticated())
                 .sessionManagement(management -> management.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

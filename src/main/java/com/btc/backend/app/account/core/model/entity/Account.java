@@ -17,6 +17,8 @@ public class Account implements UserDetails {
     private String username;
     private String password;
     private String email;
+    private boolean tfaEnabled;
+    private String secret;
 
     @ManyToMany
     @JoinTable(
@@ -94,5 +96,21 @@ public class Account implements UserDetails {
 
     public void setAllowedAuthProviders(List<Provider> allowedAuthProviders) {
         this.allowedAuthProviders = allowedAuthProviders;
+    }
+
+    public boolean isTfaEnabled() {
+        return tfaEnabled;
+    }
+
+    public void setTfaEnabled(boolean tfaEnabled) {
+        this.tfaEnabled = tfaEnabled;
+    }
+
+    public String getSecret() {
+        return secret;
+    }
+
+    public void setSecret(String secret) {
+        this.secret = secret;
     }
 }
